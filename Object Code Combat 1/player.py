@@ -48,8 +48,15 @@ class Player:
             self.health = 0
         return damage
 
-    def attack(self, enemy: "Player", ):
+    def attack(self, enemy: "Player"):
         if self.weapon == None:
             basic_damage = 1
         else:
             basic_damage = self.weapon.get_damage()
+        damage = basic_damage + self.modifier()
+        if damage < 0:
+            damage = 0
+        enemy.take(damage)
+
+    def __str__(self):
+        return f"[{self.name}] \nHP massimi: {self.max_health}\nHP attuali: {self.health}"
