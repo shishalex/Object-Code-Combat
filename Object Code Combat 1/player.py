@@ -7,7 +7,7 @@ class Player:
     surnames = ["Spadaombra", "Chiarafoglia", "Ferroscuro", "Ventogelido", "Pietradura", "Aliargento", "Cuorleale",
                 "Silenzioso", "Neromante", "Stellardente"]
 
-    def __init__(self, name: str= choice(names) + choice(surnames),  max_health: int= randint(90, 120), strength: int= randint(1, 20), dexterity: int =randint(1, 20)):
+    def __init__(self, name: str= choice(names) + " " + choice(surnames),  max_health: int= randint(90, 120), strength: int= randint(1, 20), dexterity: int =randint(1, 20)):
         self.name: str = name
         self.max_health: int = max_health
         if self.max_health < 1:
@@ -25,15 +25,16 @@ class Player:
             self.dexterity = 1
         self.weapon: "Weapon" = None
 
-    def equip(self) -> None:
-        self.weapon = Weapon(self.strength, self.dexterity)
+    def equip(self, weapon: Weapon) -> None:
+        self.weapon = weapon
 
     def modifier(self) -> int:
-        if self.weapon.type == "Melee":
+        if self.weapon.types == "melee":
             value = self.strength
-        elif self.weapon.type == "Ranged":
+        elif self.weapon.types == "ranged":
             value = self.dexterity
-        return (value - 10) // 2
+        mod = (value - 10) // 2
+        return mod
 
     def is_alive(self) -> bool:
         if self.health <= 0:
@@ -56,7 +57,8 @@ class Player:
         damage = basic_damage + self.modifier()
         if damage < 0:
             damage = 0
-        enemy.take(damage)
+        damage = enemy.take(damage)
+        return damage
 
     def __str__(self):
-        return f"[{self.name}] \nHP massimi: {self.max_health}\nHP attuali: {self.health}"
+        return f"[{self.name}] \nForza: {self.strength}\nDestrezza: {self.dexterity}\nHP massimi: {self.max_health}\nHP attuali: {self.health}"
