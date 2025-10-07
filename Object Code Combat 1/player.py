@@ -31,10 +31,9 @@ class Player:
     def modifier(self) -> int:
         if self.weapon.types == "melee":
             value = self.strength
-        elif self.weapon.types == "ranged":
+        else:
             value = self.dexterity
-        mod = (value - 10) // 2
-        return mod
+        return (value - 10) // 2
 
     def is_alive(self) -> bool:
         if self.health <= 0:
