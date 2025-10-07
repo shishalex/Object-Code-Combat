@@ -3,7 +3,7 @@ from weapon import Weapon
 
 def main():
     if __name__ == "__main__":
-        p1 = Player()
+        p1 = Player("Marco Farina", 100, 15, 8)
         p2 = Player()
 
         print("=== SIMULAZIONE COMBATTIMENTO ===")
@@ -48,4 +48,5 @@ def action(attacker: "Player", defender: "Player", damage):
 
 def victory(player: "Player"):
     print(f"{player.name} vince il combattimento! {player.name} (HP:{player.health}/{player.max_health})")
+
 main()
