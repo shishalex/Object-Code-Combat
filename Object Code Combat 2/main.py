@@ -29,6 +29,8 @@ def main():
         print(f"--- Turno {turns} ---")
         damage1 = p1.attack(p2)
         action(p1, p2, damage1)
+        if p2.is_alive() == False:
+            break
         damage2 = p2.attack(p1)
         action(p2, p1, damage2)
 

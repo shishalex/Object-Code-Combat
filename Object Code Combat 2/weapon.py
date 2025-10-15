@@ -22,3 +22,6 @@ class Weapon:
 
     def get_max_damage(self) -> int:
         return self.__max_damage
+
+    def get_type(self):
+        return self.__types

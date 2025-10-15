@@ -35,7 +35,7 @@ class Player:
         self.__weapon = weapon
 
     def modifier(self) -> int:
-        if self.weapon.types == "melee":
+        if self.get_weapon().get_type() == "melee":
             value = self.get_strength()
         else:
             value = self.get_dexterity()
