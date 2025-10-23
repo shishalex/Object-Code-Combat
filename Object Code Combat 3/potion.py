@@ -1,4 +1,4 @@
-class Potion:
+eclass Potion:
     __allowed_effects = {"heal", "buff_str", "buff_dex"}
 
     def __init__(self, name: str, effect: str, amount: int, duration: int):
@@ -8,7 +8,7 @@ class Potion:
         self.__duration = duration
 
 
-    def apply_to(self):
+     def apply_to(self):
         return
 
 

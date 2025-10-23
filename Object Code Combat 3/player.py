@@ -52,7 +52,11 @@ class Player:
     def heal(self, amount: int) -> None:
         self.health += amount
 
-    def add_buff(self, stat: str, amount: int, duration: int) -> None:
+    def add_buff(self, stat: str, amount: int = randint(1, 4), duration: int = randint(1, 3)) -> None:
+        if stat == "strength":
+            self.strength += amount
+        else:
+            self.dexterity += amount
         return
 
     def __str__(self):
