@@ -1,4 +1,8 @@
-eclass Potion:
+from player import Player
+from random import randint
+
+
+class Potion:
     __allowed_effects = {"heal", "buff_str", "buff_dex"}
 
     def __init__(self, name: str, effect: str, amount: int, duration: int):
@@ -7,10 +11,28 @@ eclass Potion:
         self.__amount = amount
         self.__duration = duration
 
+    def apply_to(self, target: Player):
+        if self.effect == "heal":
+            if hasattr(target, 'heal') and callable(getattr(target, 'heal')):
+                target.heal(randint(20, 50))
+            else:
+                print("Errore: il bersaglio non può essere curato!")
 
-     def apply_to(self):
-        return
+        elif self.effect == "buff_str":
+            if hasattr(target, 'add_buff') and callable(getattr(target, 'add_buff')):
+                target.add_buff("strength")
+            else:
+                print("Errore: il bersaglio non può essere potenziato!")
 
+        else:
+            if hasattr(target, 'add_buff') and callable(getattr(target, 'add_buff')):
+                target.add_buff("dexterity")
+            else:
+                print("Errore: il bersaglio non può essere potenziato!")
+
+    def __str__(self):
+        if self.effect == "heal":
+            return f"Potion "
 
     @property
     def name(self):
@@ -56,9 +78,8 @@ eclass Potion:
         return self.__duration
 
     @duration.setter
-    def duration(self, new_duration):
+    def duration(self, new_duration: int):
         if self.effect == "heal":
             self.__duration = 0
             return
-
         self.__duration = new_duration
