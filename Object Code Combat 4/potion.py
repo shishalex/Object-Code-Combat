@@ -30,7 +30,7 @@ class Potion:
                 target.add_buff(effect_type, self.amount, self.duration)
                 self.used = True
             else:
-                return {"error": "unsupported_target"}
+                raise ValueError("Il Target non può usare la pozione!")
             
         return {"effect":self.effect, "amount":self.amount, "duration":self.duration}
 

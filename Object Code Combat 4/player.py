@@ -65,9 +65,9 @@ class Player:
 
     def heal(self, amount: int) -> int:
         if amount < 0:
-            raise ValueError("Non si può subire danno negativo!")
+            raise ValueError("Non ti puoi curare con un valore negativo!")
         elif not isinstance(amount, int):
-            raise TypeError("Damage deve essere un intero!")
+            raise TypeError("Amount deve essere un intero!")
 
         self.health = self.__clamp_health(self.health + amount)
         return amount
@@ -88,14 +88,12 @@ class Player:
     
     def use_potion(self, potion: Potion) -> dict:
         if potion not in self.__potions:
-            return {"error": "potion_not_in_inventory"}
+            raise ValueError("Pozione non presente nell'inventario!")
         
-        result = potion.apply_to(self)
+        used_potion = potion.apply_to(self)
+        self.__potions.remove(potion)
         
-        if result and "error" not in result:
-            self.__potions.remove(potion)
-        
-        return result
+        return used_potion
     
     def should_use_potion(self) -> Potion | None:
         if self.health <= 30:
