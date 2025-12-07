@@ -3,11 +3,18 @@ from random import randint
 class Weapon:
     __allowed_types = {"ranged", "melee"}
 
-    def __init__(self, name:str, min_damage:int, max_damage:int, types:str):
+    def __init__(self, name: str, min_damage: int, max_damage: int, w_type: str):
+        if min_damage < 1:
+            raise ValueError("Il danno minimo deve essere almeno 1!")
+        if max_damage < min_damage:
+            raise ValueError("Il danno massimo deve essere maggiore o uguale al danno minimo!")
+        if w_type.lower() not in Weapon.__allowed_types:
+            raise ValueError(f"Il tipo dell'arma deve essere uno tra {Weapon.__allowed_types}.")
+
         self.__name = name
         self.__min_damage = min_damage
         self.__max_damage = max_damage
-        self.__types = types.lower
+        self.__w_type = w_type.lower()
 
     def get_damage(self) -> int:
         return randint(self.min_damage, self.max_damage)
@@ -29,8 +36,8 @@ class Weapon:
             print("Il valore del danno minimo è troppo piccolo! "
                   "È stato impostato automaticamente ad 1.")
             self.__min_damage = 1
-
-        self.__min_damage = new_min_damage
+        else:
+            self.__min_damage = new_min_damage
 
     @property
     def max_damage(self) -> int:
@@ -42,17 +49,19 @@ class Weapon:
             print("Il valore del danno massimo è più piccolo del danno minimo! "
                   f"È stato impostato automaticamente ad {self.min_damage}.")
             self.__max_damage = self.min_damage
+        else:
+            self.__max_damage = new_max_damage
 
-        self.__min_damage = new_max_damage
     @property
-    def types(self):
-        return self.__types
+    def w_type(self):
+        return self.__w_type
 
-    @types.setter
-    def types(self, new_type):
+    @w_type.setter
+    def w_type(self, new_type):
         if new_type not in Weapon.__allowed_types:
             print(
                 f"Valore non valido per 'effect': '{new_type}'. "
                 f"I valori ammessi sono: {', '.join(Weapon.__allowed_types)}"
             )
             return
+        self.__w_type = new_type.lower()

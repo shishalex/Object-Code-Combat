@@ -1,6 +1,4 @@
-from player import Player
-from random import randint
-
+from __future__ import annotations
 
 class Potion:
     __allowed_effects = {"heal", "buff_str", "buff_dex"}
@@ -10,29 +8,34 @@ class Potion:
         self.__effect = effect
         self.__amount = amount
         self.__duration = duration
+        self.__used = False
 
-    def apply_to(self, target: Player):
-        if self.effect == "heal":
-            if hasattr(target, 'heal') and callable(getattr(target, 'heal')):
-                target.heal(randint(20, 50))
+    def apply_to(self, target)-> dict:
+        if self.used:
+            return {"error": "already_consumed"}
+        
+        elif self.effect == "heal":
+            if hasattr(target, "heal") and callable(getattr(target, "heal")):
+                target.heal(self.amount)
+                self.used = True
             else:
-                print("Errore: il bersaglio non può essere curato!")
+                return {"error": "unsupported_target"}
 
-        elif self.effect == "buff_str":
-            if hasattr(target, 'add_buff') and callable(getattr(target, 'add_buff')):
-                target.add_buff("strength")
+        elif self.effect in ("buff_dex", "buff_str"):
+            if hasattr(target, "add_buff") and callable(getattr(target, "add_buff")):
+                effect_type = "strength" if self.effect == "buff_str" else "dexterity"
+                target.add_buff(effect_type, self.amount, self.duration)
+                self.used = True
             else:
-                print("Errore: il bersaglio non può essere potenziato!")
-
-        else:
-            if hasattr(target, 'add_buff') and callable(getattr(target, 'add_buff')):
-                target.add_buff("dexterity")
-            else:
-                print("Errore: il bersaglio non può essere potenziato!")
+                return {"error": "unsupported_target"}
+            
+        return {"effect":self.effect, "amount":self.amount, "duration":self.duration}
 
     def __str__(self):
         if self.effect == "heal":
-            return f"Potion "
+            return f"{self.name}({self.effect} +{self.amount})"
+        else:
+            return f"{self.name}({self.effect} +{self.amount} for {self.duration} turns)"
 
     @property
     def name(self):
@@ -83,3 +86,11 @@ class Potion:
             self.__duration = 0
             return
         self.__duration = new_duration
+    
+    @property
+    def used(self):
+        return self.__used
+
+    @used.setter
+    def used(self, new_used: bool):
+        self.__used = new_used

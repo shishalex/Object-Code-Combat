@@ -1,5 +1,6 @@
 from player import Player
 from weapon import Weapon
+from potion import Potion
 
 
 def main():
@@ -15,8 +16,11 @@ def main():
     weapon1 = Weapon("Spada Lunga", 5, 12, "melee")
     weapon2 = Weapon("Balestra pesante", 4, 12, "Ranged")
 
-    p1.equip(weapon1)
-    p2.equip(weapon2)
+    setup_potions(p1)
+    setup_potions(p2)
+
+    p1.weapon = weapon1
+    p2.weapon = weapon2
 
     weapon_equip(p1.name, weapon1)
     weapon_equip(p2.name, weapon2)
@@ -24,22 +28,48 @@ def main():
 
     print("=== INIZIO COMBATTIMENTO ===")
     turns = 0
-    while p1.health > 0 and p2.health > 0:
+    while p1.is_alive() and p2.is_alive():
         turns += 1
         print(f"--- Turno {turns} ---")
+
+        potion = p1.should_use_potion()
+        if potion is not None:
+            log = p1.use_potion(potion)
+            if "error" in log:
+                print(f"{p1.name} tenta usare {potion}, ma si verifica un errore: {log['error']}")
+            else:
+                
+                print(f"{p1.name} usa {potion}")
+
         damage1 = p1.attack(p2)
         action(p1, p2, damage1)
         if not p2.is_alive():
             break
+
+        potion = p2.should_use_potion()
+        if potion is not None:
+            log = p2.use_potion(potion)
+            if "error" in log:
+                print(f"{p2.name} tenta usare {potion}, ma si verifica un errore: {log['error']}")
+            else:
+                print(f"{p2.name} usa {potion}")
+
         damage2 = p2.attack(p1)
         action(p2, p1, damage2)
 
-    print("=== FINE COMBATTIMENTO ===")
-    if p1.is_alive():
-        victory(p1)
-    elif p2.is_alive():
-        victory(p2)
+        p1.tick_buffs()
+        p2.tick_buffs()
 
+    print("=== FINE COMBATTIMENTO ===")
+    p1_alive = p1.is_alive()
+    p2_alive = p2.is_alive()
+
+    if p1_alive and not p2_alive:
+        victory(p1)
+    elif p2_alive and not p1_alive:
+        victory(p2)
+    else:
+        print("Il combattimento termina in pareggio!")
 
 def weapon_equip(name: str, weapon: "Weapon"):
     print(f"{name} equipaggia: {weapon}")
@@ -53,6 +83,16 @@ def action(attacker: "Player", defender: "Player", damage):
 def victory(player: "Player"):
     print(f"{player.name} vince il combattimento! {player.name} (HP:{player.health}/"
           f"{player.max_health})")
+
+
+def setup_potions(player: Player) -> None:
+    player.potions.append(Potion("Healing Draught", "heal", 10, 0))
+    player.potions.append(Potion("Healing Draught", "heal", 10, 0))
+
+    if player.strength >= player.dexterity:
+        player.potions.append(Potion("Ogre Tonic", "buff_str", 2, 3))
+    else:
+        player.potions.append(Potion("Cat's Grace", "buff_dex", 2, 3))
 
 
 if __name__ == "__main__":
