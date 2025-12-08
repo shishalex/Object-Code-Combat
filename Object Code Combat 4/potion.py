@@ -2,6 +2,13 @@ class Potion:
     __allowed_effects = {"heal", "buff_str", "buff_dex"}
 
     def __init__(self, name: str, effect: str, amount: int, duration: int):
+        if name == "":
+            raise ValueError("Il nome non può essere una stringa vuota!")
+        if effect not in Potion.__allowed_effects:
+            raise ValueError("La Pozione non ha un effetto valido!")
+        if amount < 1:
+            raise ValueError("La Pozione non può avere un valore minore o pari a 0!")
+
         self.__name = name
         self.__effect = effect
         self.__amount = amount
